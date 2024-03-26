@@ -1,0 +1,30 @@
+.container {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .top-bar {
+    margin-bottom: 20px;
+  }
+  
+  .cityInput {
+    padding: 10px;
+    margin-right: 10px;
+    font-size: 16px;
+  }
+  
+  .search-icon {
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+  
+  .weather-image img {
+    width: 100px;
+    height: auto;
+  }
+  
+  .error-message {
+    color: red;
+  }
+  

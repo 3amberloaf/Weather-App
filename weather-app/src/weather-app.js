@@ -6,7 +6,7 @@ const Weatherapp = () => {
     const [city, setCity] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     // Remember to replace YOUR_API_KEY_HERE with your actual API key
-    const api_key = "http://api.openweathermap.org/data/2.5/forecast?id=524901&appid={API key}";
+    const api_key = "2c7b3eaee517f97571a4ca5f204f6cf4";
 
     useEffect(() => {
         // Fetching weather for a random city from the list
@@ -32,7 +32,7 @@ const Weatherapp = () => {
                     windspeed: `${data.wind.speed}m/s`,
                     location: data.name,
                     // Assuming you want to use weather icons from the API response
-                    weatherIcon: `http://openweathermap.org/img/w/${data.weather[0].icon}.png`,
+                    weatherIcon: `https://openweathermap.org/img/w/${data.weather[0].icon}.png`,
                 });
                 setErrorMessage("");
             } else {

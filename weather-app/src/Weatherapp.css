@@ -1,10 +1,17 @@
 .container {
-    text-align: center;
-    padding: 20px;
-  }
+  text-align: center;
+  padding: 20px;
+  min-height: 100vh; /* Ensure it takes at least the full height of the viewport */
+  background-size: cover; /* Cover the full area */
+  background-repeat: no-repeat; /* Prevent tiling of the background image */
+  background-position: center; /* Center the background image */
+}
+
   
   .top-bar {
     margin-bottom: 20px;
+    text-align: right;
+    
   }
   
   .cityInput {

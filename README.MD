@@ -13,4 +13,4 @@ This is one of my first projects using React
 
 ### April 8th, 2024
 
-1. How to add an opening with a fad out gif
+1. How to add an opening with a fade out gif

@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import "./Weatherapp.css";
 import "./opening.css";
 
+
 const Weatherapp = () => {
     const [weatherData, setWeatherData] = useState(null);
     const [city, setCity] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const api_key = "f56a9502abe192977b18d3434e1da040";
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetchWeatherForRandomCity();
@@ -20,12 +22,9 @@ const Weatherapp = () => {
             const mainContent = document.querySelector('main');
             if (mainContent) {
                 mainContent.classList.add('fade-in');
-                // Optionally, make sure the main content is visible
                 mainContent.style.display = 'block';
             }
-        }, 3000); // Adjust the time based on the duration of your GIF
-
-        // Clear the timeout if the component is unmounted before the timer runs out
+        }, 3000); 
         return () => clearTimeout(timer);
 
 
@@ -45,16 +44,18 @@ const Weatherapp = () => {
 
             if (data.cod === 200) {
                 setWeatherData({
-                    temperature: `${data.main.temp}°C`,
+                    temperature: `${data.main.temp}°F`,
                     humidity: `${data.main.humidity}%`,
                     windspeed: `${data.wind.speed}m/s`,
                     location: data.name,
-                    // Assuming you want to use weather icons from the API response
                     weatherIcon: `http://openweathermap.org/img/w/${data.weather[0].icon}.png`,
+                    weatherCondition: data.weather[0].main,
                 });
                 setErrorMessage("");
+                setLoading(false);
             } else {
-                setErrorMessage(data.message);
+                setErrorMessage(data.message); 
+                setLoading(false);
             }
         } catch (error) {
             console.error("error fetching weather data: ", error);
@@ -76,16 +77,30 @@ const Weatherapp = () => {
         }
     };
 
+    const getBackgroundImage = (weatherCondition) => {
+        switch (weatherCondition) {
+            case 'Rain':
+                return 'images/rain.gif'; 
+            case 'Clear':
+                return 'images/flowers.gif';
+            // Add more cases for other weather conditions
+            default:
+                return 'images/clouds.jpeg'; 
+        }
+    };
+    
+    const backgroundStyle = weatherData ? { backgroundImage: `url(${getBackgroundImage(weatherData.weatherCondition)})` } : {};
+
+
     return (
-            <>
-                <div id="preloader">
-                    <div className="text-container">
+        <>
+            <div id="preloader"> 
+                    <><div className="text-container">
                         <h1> New Jersey Local Weather</h1>
                         <p> News Anchor Amber Sautner </p>
-                    </div>
-                    <img src="images/sun.gif" alt="loading" className="character-graphic" />
-                </div>
-                <div className="container">
+                    </div><img src="images/sun.gif" alt="loading" className="character-graphic" /></>
+              </div> 
+        <div className="container" style={!loading ? backgroundStyle : {}}>
             <div className="top-bar">
                 <input
                     type="text"
@@ -104,7 +119,7 @@ const Weatherapp = () => {
 
             {weatherData && (
                 <>
-                    <div className="weather-image">
+                    <div className="weather-image"> 
                         <img src={weatherData.weatherIcon} alt="Weather icon" />
                     </div>
                     <div className="weather-temp">{weatherData.temperature}</div>
@@ -120,8 +135,6 @@ const Weatherapp = () => {
                 </>
             )}
         </div>
-
-        <script src="script.js"></script>
         </>
     );
 };

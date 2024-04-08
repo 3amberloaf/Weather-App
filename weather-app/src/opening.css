@@ -1,0 +1,72 @@
+
+.fade-in {
+    animation: fadeIn 3s ease-in-out;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #FAF3F3; /* Soft pink background, for example */
+  font-family: "Libre Baskerville", serif;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 1000;
+  justify-content: flex-start;
+}
+
+#preloader .text-container {
+  margin-top: 1px; /* or whatever value suits your design */
+  /* rest of your styles */
+}
+
+#preloader h1 {
+      color: #ffffff;
+      font-family: "Great Vibes";
+      font-size: 105px;
+      line-height: 160px;
+      font-weight: normal;
+      margin-bottom: 0px;
+      margin-top: 40px;
+      text-align: center;
+      text-shadow: 2px 2px 4px #73aedf;
+  }
+
+
+
+#preloader p {
+      color: #ffcdf1;
+      font-family: "Libre Baskerville", cursive;
+      line-height: 45px;
+      text-align: center;
+      padding-top: 20px;
+      font-size: 2.5rem;
+      margin: 20px 0;
+  }
+
+
+#preloader p.byline {
+  margin-top: 20px;
+  text-align: center;
+
+}
+
+#preloader .character-graphic {
+  max-width: 100%; /* Responsive image size */
+  height: auto;
+  display: block;
+  margin: 20px auto; /* Center the character */
+  margin-top: 1px; /* Adjust this value to push the image lower */
+}

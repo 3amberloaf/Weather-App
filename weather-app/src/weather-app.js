@@ -1,16 +1,34 @@
 import React, { useState, useEffect } from "react";
 import "./Weatherapp.css";
+import "./opening.css";
 
 const Weatherapp = () => {
     const [weatherData, setWeatherData] = useState(null);
     const [city, setCity] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-    // Remember to replace YOUR_API_KEY_HERE with your actual API key
-    const api_key = "http://api.openweathermap.org/data/2.5/forecast?id=524901&appid={API key}";
+    const api_key = "f56a9502abe192977b18d3434e1da040";
 
     useEffect(() => {
-        // Fetching weather for a random city from the list
         fetchWeatherForRandomCity();
+        
+        const timer = setTimeout(() => {
+            // Hide the preloader
+            const preloader = document.getElementById("preloader");
+            if (preloader) {
+                preloader.style.display = 'none';
+            }
+            const mainContent = document.querySelector('main');
+            if (mainContent) {
+                mainContent.classList.add('fade-in');
+                // Optionally, make sure the main content is visible
+                mainContent.style.display = 'block';
+            }
+        }, 3000); // Adjust the time based on the duration of your GIF
+
+        // Clear the timeout if the component is unmounted before the timer runs out
+        return () => clearTimeout(timer);
+
+
     }, []);
 
     const fetchWeatherForRandomCity = async () => {
@@ -59,7 +77,15 @@ const Weatherapp = () => {
     };
 
     return (
-        <div className="container">
+            <>
+                <div id="preloader">
+                    <div className="text-container">
+                        <h1> New Jersey Local Weather</h1>
+                        <p> News Anchor Amber Sautner </p>
+                    </div>
+                    <img src="images/sun.gif" alt="loading" className="character-graphic" />
+                </div>
+                <div className="container">
             <div className="top-bar">
                 <input
                     type="text"
@@ -94,6 +120,9 @@ const Weatherapp = () => {
                 </>
             )}
         </div>
+
+        <script src="script.js"></script>
+        </>
     );
 };
 

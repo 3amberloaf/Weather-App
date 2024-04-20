@@ -7,13 +7,8 @@ const Weatherapp = () => {
     const [weatherData, setWeatherData] = useState(null);
     const [city, setCity] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-<<<<<<< HEAD
     const api_key = "f56a9502abe192977b18d3434e1da040";
     const [loading, setLoading] = useState(true);
-=======
-    // Remember to replace YOUR_API_KEY_HERE with your actual API key
-    const api_key = "2c7b3eaee517f97571a4ca5f204f6cf4";
->>>>>>> cf30b09a33800a2c942934ce0d19f7c887195c22
 
     useEffect(() => {
         fetchWeatherForRandomCity();
@@ -61,13 +56,8 @@ const Weatherapp = () => {
                     humidity: `${data.main.humidity}%`,
                     windspeed: `${data.wind.speed}m/s`,
                     location: data.name,
-<<<<<<< HEAD
                     weatherIcon: `http://openweathermap.org/img/w/${data.weather[0].icon}.png`,
                     weatherCondition: data.weather[0].main,
-=======
-                    // Assuming you want to use weather icons from the API response
-                    weatherIcon: `https://openweathermap.org/img/w/${data.weather[0].icon}.png`,
->>>>>>> cf30b09a33800a2c942934ce0d19f7c887195c22
                 });
                 setErrorMessage("");
                 setLoading(false);

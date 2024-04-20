@@ -12,23 +12,31 @@ const Weatherapp = () => {
 
     useEffect(() => {
         fetchWeatherForRandomCity();
-        
+    
         const timer = setTimeout(() => {
-            // Hide the preloader
+            // Start the fade-out
             const preloader = document.getElementById("preloader");
             if (preloader) {
-                preloader.style.display = 'none';
+                preloader.classList.add('fade-out');
             }
-            const mainContent = document.querySelector('main');
-            if (mainContent) {
-                mainContent.classList.add('fade-in');
-                mainContent.style.display = 'block';
-            }
-        }, 3000); 
+    
+            // Wait for the fade-out to finish before hiding the preloader
+            const fadeOutDuration = 500; // duration of fade-out in milliseconds
+            setTimeout(() => {
+                if (preloader) {
+                    preloader.style.display = 'none';
+                }
+                const mainContent = document.querySelector('main');
+                if (mainContent) {
+                    mainContent.classList.add('fade-in');
+                    mainContent.style.display = 'block';
+                }
+            }, fadeOutDuration);
+        }, 3000);
+    
         return () => clearTimeout(timer);
-
-
     }, []);
+    
 
     const fetchWeatherForRandomCity = async () => {
         const cities = ["Warren", "Bedminster", "Newark", "Trenton", "Hillsborough"];

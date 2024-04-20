@@ -8,6 +8,13 @@ const Weatherapp = () => {
     const [city, setCity] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const api_key = "f56a9502abe192977b18d3434e1da040";
+    const iconMapping = {
+        "01d": '/images/sunny.gif', // example path for clear sky day
+        "01n": '/images/moon.gif', // example path for clear sky night
+        "02d": '/images/rainy.gif', // example path for few clouds day
+        "03d": '/images/cloudy.gif', // example path for few clouds day
+            };
+
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -44,6 +51,8 @@ const Weatherapp = () => {
         fetchWeatherData(randomCity);
     };
 
+
+
     const fetchWeatherData = async (searchCity) => {
         try {
             const url = `https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&appid=${api_key}&units=metric`;
@@ -56,7 +65,7 @@ const Weatherapp = () => {
                     humidity: `${data.main.humidity}%`,
                     windspeed: `${data.wind.speed}m/s`,
                     location: data.name,
-                    weatherIcon: `http://openweathermap.org/img/w/${data.weather[0].icon}.png`,
+                    weatherIcon: iconMapping[data.weather[0].icon] || '/images/sunny.gif', // Use the mapping here
                     weatherCondition: data.weather[0].main,
                 });
                 setErrorMessage("");
@@ -97,6 +106,8 @@ const Weatherapp = () => {
     };
     
     const backgroundStyle = weatherData ? { backgroundImage: `url(${getBackgroundImage(weatherData.weatherCondition)})` } : {};
+
+    
 
 
     return (

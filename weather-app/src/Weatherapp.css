@@ -34,3 +34,14 @@
   .error-message {
     color: red;
   }
+
+  .weather-information {
+    font-size: 25px;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.weather-location {
+  font-size: 60px;
+  font-weight: 100;
+  padding: 30 px;
+}

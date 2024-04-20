@@ -129,15 +129,15 @@ const Weatherapp = () => {
                     <div className="weather-image"> 
                         <img src={weatherData.weatherIcon} alt="Weather icon" />
                     </div>
-                    <div className="weather-temp">{weatherData.temperature}</div>
-                    <div className="weather-location">{weatherData.location}</div>
-                    <div className="data-container">
-                        <div className="humidity-percent">{weatherData.humidity}</div>
-                        <div className="text">Humidity</div>
-                    </div>
-                    <div className="element">
-                        <div className="wind-rate">{weatherData.windspeed}</div>
-                        <div className="text">Wind Speed</div>
+                    <div className = "weather-information">
+                        <div className="weather-location">{weatherData.location}</div>
+                        <div className="weather-temp">Temperature: {weatherData.temperature}</div>
+                        <div className="data-container">
+                            <div className="humidity-percent">Humidity: {weatherData.humidity}</div>
+                        </div>
+                        <div className="element">
+                            <div className="wind-rate">Wind Speed: {weatherData.windspeed}</div>
+                        </div> 
                     </div>
                 </>
             )}

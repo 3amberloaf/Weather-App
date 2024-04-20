@@ -21,7 +21,7 @@ const Weatherapp = () => {
             }
     
             // Wait for the fade-out to finish before hiding the preloader
-            const fadeOutDuration = 500; // duration of fade-out in milliseconds
+            const fadeOutDuration = 1000; // duration of fade-out in milliseconds
             setTimeout(() => {
                 if (preloader) {
                     preloader.style.display = 'none';
@@ -91,7 +91,6 @@ const Weatherapp = () => {
                 return 'images/rain.gif'; 
             case 'Clear':
                 return 'images/flowers.gif';
-            // Add more cases for other weather conditions
             default:
                 return 'images/clouds.jpeg'; 
         }

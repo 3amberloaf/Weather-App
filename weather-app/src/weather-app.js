@@ -7,7 +7,6 @@ const Weatherapp = () => {
     const [weatherData, setWeatherData] = useState(null);
     const [city, setCity] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-    const api_key = process.env.REACT_APP_API_KEY;
     const iconMapping = {
         "01d": '/images/sunny.gif', // example path for clear sky day
         "01n": '/images/moon.gif', // example path for clear sky night
@@ -55,7 +54,7 @@ const Weatherapp = () => {
 
     const fetchWeatherData = async (searchCity) => {
         try {
-            const url = `https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&appid=${process.env.REACT_APP_API_KEY}&units=metric`;
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&appid=${process.env.REACT_APP_API_KEY}&units=imperial`;
             const response = await fetch(url);
             const data = await response.json();
 
@@ -63,7 +62,8 @@ const Weatherapp = () => {
                 setWeatherData({
                     temperature: `${data.main.temp}°F`,
                     humidity: `${data.main.humidity}%`,
-                    windspeed: `${data.wind.speed}m/s`,
+                    feels: `${data.main.feels_like}°F`,
+                    windspeed: `${data.wind.speed}m/h`,
                     location: data.name,
                     weatherIcon: iconMapping[data.weather[0].icon] || '/images/sunny.gif', // Use the mapping here
                     weatherCondition: data.weather[0].main,
@@ -143,6 +143,7 @@ const Weatherapp = () => {
                     <div className = "weather-information">
                         <div className="weather-location">{weatherData.location}</div>
                         <div className="weather-temp">Temperature: {weatherData.temperature}</div>
+                        <div className="weather-feels">Feels Like: {weatherData.feels}</div>
                         <div className="data-container">
                             <div className="humidity-percent">Humidity: {weatherData.humidity}</div>
                         </div>

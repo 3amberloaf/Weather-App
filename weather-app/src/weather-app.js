@@ -7,7 +7,7 @@ const Weatherapp = () => {
     const [weatherData, setWeatherData] = useState(null);
     const [city, setCity] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-    const api_key = "f56a9502abe192977b18d3434e1da040";
+    const api_key = process.env.REACT_APP_API_KEY;
     const iconMapping = {
         "01d": '/images/sunny.gif', // example path for clear sky day
         "01n": '/images/moon.gif', // example path for clear sky night
@@ -55,7 +55,7 @@ const Weatherapp = () => {
 
     const fetchWeatherData = async (searchCity) => {
         try {
-            const url = `https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&appid=${api_key}&units=metric`;
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&appid=${process.env.REACT_APP_API_KEY}&units=metric`;
             const response = await fetch(url);
             const data = await response.json();
 

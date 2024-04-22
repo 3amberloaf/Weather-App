@@ -62,6 +62,8 @@ const Weatherapp = () => {
                 setWeatherData({
                     temperature: `${data.main.temp}°F`,
                     humidity: `${data.main.humidity}%`,
+                    high: `${data.main.temp_max}°F`,
+                    low: `${data.main.temp_min}°F`,
                     feels: `${data.main.feels_like}°F`,
                     windspeed: `${data.wind.speed}m/h`,
                     location: data.name,
@@ -99,7 +101,7 @@ const Weatherapp = () => {
             case 'Rain':
                 return 'images/rain.gif'; 
             case 'Clear':
-                return 'images/flowers.gif';
+                return 'images/clouds.jpeg';
             default:
                 return 'images/clouds.jpeg'; 
         }
@@ -137,19 +139,19 @@ const Weatherapp = () => {
 
             {weatherData && (
                 <>
+                <div className="weather-location">{weatherData.location}</div>
                     <div className="weather-image"> 
                         <img src={weatherData.weatherIcon} alt="Weather icon" />
                     </div>
-                    <div className = "weather-information">
-                        <div className="weather-location">{weatherData.location}</div>
-                        <div className="weather-temp">Temperature: {weatherData.temperature}</div>
-                        <div className="weather-feels">Feels Like: {weatherData.feels}</div>
-                        <div className="data-container">
+                    <div className = "weather-flexbox">
+
+                            <div className="weather-temp">Temperature: {weatherData.temperature}</div>
+                            <div className="weather-high">High Of: {weatherData.high}</div>
+                            <div className="weather-high">Low Of: {weatherData.high}</div>
+                            <div className="weather-feels">Feels Like: {weatherData.feels}</div>
                             <div className="humidity-percent">Humidity: {weatherData.humidity}</div>
-                        </div>
-                        <div className="element">
                             <div className="wind-rate">Wind Speed: {weatherData.windspeed}</div>
-                        </div> 
+
                     </div>
                 </>
             )}

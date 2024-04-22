@@ -35,13 +35,17 @@
     color: red;
   }
 
-  .weather-information {
+  .weather-flexbox {
     font-size: 25px;
     font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    display: flex;
+    flex-direction: column;
+    
 }
 
 .weather-location {
   font-size: 60px;
   font-weight: 100;
+  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
   padding: 30 px;
 }

@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "./Weatherapp.css";
 import "./opening.css";
-
+import DayForecast  from "./dayforest";
 
 const Weatherapp = () => {
     const [weatherData, setWeatherData] = useState(null);
     const [city, setCity] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const [fiveDayForecast, setFiveDayForecast] = useState([]);
     const iconMapping = {
         "01d": '/images/sunny.gif', // example path for clear sky day
-        "01n": '/images/moon.gif', // example path for clear sky night
         "02d": '/images/rainy.gif', // example path for few clouds day
         "03d": '/images/cloudy.gif', // example path for few clouds day
             };
@@ -53,34 +53,68 @@ const Weatherapp = () => {
 
 
     const fetchWeatherData = async (searchCity) => {
+        setLoading(true);
         try {
-            const url = `https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&appid=${process.env.REACT_APP_API_KEY}&units=imperial`;
-            const response = await fetch(url);
-            const data = await response.json();
-
-            if (data.cod === 200) {
-                setWeatherData({
-                    temperature: `${data.main.temp}°F`,
-                    humidity: `${data.main.humidity}%`,
-                    high: `${data.main.temp_max}°F`,
-                    low: `${data.main.temp_min}°F`,
-                    feels: `${data.main.feels_like}°F`,
-                    windspeed: `${data.wind.speed}m/h`,
-                    location: data.name,
-                    weatherIcon: iconMapping[data.weather[0].icon] || '/images/sunny.gif', // Use the mapping here
-                    weatherCondition: data.weather[0].main,
-                });
-                setErrorMessage("");
-                setLoading(false);
-            } else {
-                setErrorMessage(data.message); 
-                setLoading(false);
+            // Fetch current weather
+            const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&appid=${process.env.REACT_APP_API_KEY}&units=imperial`;
+            const weatherResponse = await fetch(currentWeatherUrl);
+            const currentWeatherData = await weatherResponse.json();
+    
+            // Fetch 5-day forecast
+            const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${searchCity}&appid=${process.env.REACT_APP_API_KEY}&units=imperial`;
+            const forecastResponse = await fetch(forecastUrl);
+            const forecastData = await forecastResponse.json();
+    
+            // Process the 5-day forecast data
+            const processedForecastData = processForecastData(forecastData.list);
+    
+            if (currentWeatherData.cod === 200) {
+                setWeatherData({ 
+                    location: currentWeatherData.name,
+                 });
+                
             }
+    
+            if (forecastData.cod === "200") {
+                setFiveDayForecast(processedForecastData);
+            }
+            
+            setErrorMessage("");
         } catch (error) {
             console.error("error fetching weather data: ", error);
-            setErrorMessage("Failed to fetch Weather Data. Please try again later.");
+            setErrorMessage("Failed to fetch weather data. Please try again later.");
         }
+        setLoading(false);
     };
+    
+    // A helper function to process the 5-day forecast data
+    const processForecastData = (forecastList) => {
+        // Process the forecast data to get daily summaries
+        const dailyData = {};
+        forecastList.forEach((forecast) => {
+            const day = new Date(forecast.dt_txt).toLocaleDateString();
+            if (!dailyData[day]) {
+                dailyData[day] = [];
+            }
+            dailyData[day].push(forecast);
+        });
+    
+        // Reduce the data to get the high, low, and other information for each day
+        return Object.keys(dailyData).map((day) => {
+            const dayForecasts = dailyData[day];
+            const highs = dayForecasts.map(f => f.main.temp_max);
+            const lows = dayForecasts.map(f => f.main.temp_min);
+            const daySummary = {
+                day,
+                high: Math.max(...highs).toFixed(1),
+                low: Math.min(...lows).toFixed(1),
+                icon: dayForecasts[0].weather[0].icon,
+                description: dayForecasts[0].weather[0].main
+            };
+            return daySummary;
+        }).slice(0, 5); 
+    };
+    
 
     const search = () => {
         if (city.trim() === "") {
@@ -96,6 +130,11 @@ const Weatherapp = () => {
         }
     };
 
+    
+
+
+
+
     const getBackgroundImage = (weatherCondition) => {
         switch (weatherCondition) {
             case 'Rain':
@@ -110,8 +149,6 @@ const Weatherapp = () => {
     const backgroundStyle = weatherData ? { backgroundImage: `url(${getBackgroundImage(weatherData.weatherCondition)})` } : {};
 
     
-
-
     return (
         <>
             <div id="preloader"> 
@@ -139,20 +176,33 @@ const Weatherapp = () => {
 
             {weatherData && (
                 <>
-                <div className="weather-location">{weatherData.location}</div>
+                
                     <div className="weather-image"> 
+                    <div className="weather-location">{weatherData.location}</div>
                         <img src={weatherData.weatherIcon} alt="Weather icon" />
                     </div>
                     <div className = "weather-flexbox">
 
-                            <div className="weather-temp">Temperature: {weatherData.temperature}</div>
-                            <div className="weather-high">High Of: {weatherData.high}</div>
-                            <div className="weather-high">Low Of: {weatherData.high}</div>
+                            
                             <div className="weather-feels">Feels Like: {weatherData.feels}</div>
                             <div className="humidity-percent">Humidity: {weatherData.humidity}</div>
                             <div className="wind-rate">Wind Speed: {weatherData.windspeed}</div>
 
                     </div>
+                    {fiveDayForecast.length > 0 && (
+                        <div className="forecast-container">
+                            {fiveDayForecast.map((forecastData, index) => (
+                            <DayForecast
+                                key={index}
+                                day={forecastData.day} // Make sure to format the date correctly
+                                high={forecastData.high}
+                                low={forecastData.low}
+                                icon={iconMapping[forecastData.iconCode]} // Map the icon code to your gif images
+                                description={forecastData.description}
+                            />
+                            ))}
+          </div>
+        )}
                 </>
             )}
         </div>

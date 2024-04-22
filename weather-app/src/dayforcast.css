@@ -1,0 +1,22 @@
+/* DayForecast.css */
+.day-forecast {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    background-color: #f9f9f9;
+  }
+  
+  .day-forecast h3 {
+    margin: 0;
+    color: #333;
+  }
+  
+  .weather-icon {
+    width: 50px;
+    height: auto;
+    margin: 5px 0;
+  }
+  
+  /* ...additional styles */
+  

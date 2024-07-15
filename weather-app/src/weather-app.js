@@ -1,61 +1,79 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./Weatherapp.css";
 import "./opening.css";
 import DayForecast from "./dayforest";
+
+const CACHE_EXPIRATION = 10 * 60 * 1000; // Cache expiration time in milliseconds (e.g., 10 minutes)
 
 const Weatherapp = () => {
     const [weatherData, setWeatherData] = useState(null);
     const [city, setCity] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [fiveDayForecast, setFiveDayForecast] = useState([]);
-    const iconMapping = {
-        "01d": '/images/sunny.gif', // example path for clear sky day
-        "02d": '/images/rainy.gif', // example path for few clouds day
-        "03d": '/images/cloudy.gif', // example path for scattered clouds day
-    };
-
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchWeatherForRandomCity();
-    }, []);
+    const iconMapping = {
+        "01d": '/images/01d.png',
+        "01n": '/images/01n.png',
+        "02d": '/images/02d.png',
+        "02n": '/images/02n.png',
+        "03d": '/images/03d.png',
+        "03n": '/images/03n.png',
+        "04d": '/images/04d.png',
+        "04n": '/images/04n.png',
+        "09d": '/images/09d.png',
+        "09n": '/images/09n.png',
+        "10d": '/images/10d.png',
+        "10n": '/images/10n.png',
+        "11d": '/images/11d.png',
+        "11n": '/images/11n.png',
+        "13d": '/images/13d.png',
+        "13n": '/images/13n.png',
+        "50d": '/images/50d.png',
+        "50n": '/images/50n.png'
+    };
 
-    const fetchWeatherForRandomCity = async () => {
+    const fetchWeatherForRandomCity = useCallback(async () => {
         const cities = ["Warren", "Bedminster", "Newark", "Trenton", "Hillsborough"];
         const randomCity = cities[Math.floor(Math.random() * cities.length)];
         fetchWeatherData(randomCity);
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchWeatherForRandomCity();
+    }, [fetchWeatherForRandomCity]);
 
     const fetchWeatherData = async (searchCity) => {
         setLoading(true);
         try {
-            // Fetch current weather
-            const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&appid=${process.env.REACT_APP_API_KEY}&units=imperial`;
-            const weatherResponse = await fetch(currentWeatherUrl);
-            const currentWeatherData = await weatherResponse.json();
+            const cachedData = getCachedData(searchCity);
+            if (cachedData) {
+                setWeatherData(cachedData.currentWeather);
+                setFiveDayForecast(cachedData.fiveDayForecast);
+            } else {
+                const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&appid=${process.env.REACT_APP_API_KEY}&units=imperial`;
+                const weatherResponse = await fetch(currentWeatherUrl);
+                const currentWeatherData = await weatherResponse.json();
 
-            // Fetch 5-day forecast
-            const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${searchCity}&appid=${process.env.REACT_APP_API_KEY}&units=imperial`;
-            const forecastResponse = await fetch(forecastUrl);
-            const forecastData = await forecastResponse.json();
+                const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${searchCity}&appid=${process.env.REACT_APP_API_KEY}&units=imperial`;
+                const forecastResponse = await fetch(forecastUrl);
+                const forecastData = await forecastResponse.json();
 
-            // Process the 5-day forecast data
-            const processedForecastData = processForecastData(forecastData.list);
+                const processedForecastData = processForecastData(forecastData.list);
 
-            if (currentWeatherData.cod === 200) {
-                setWeatherData({ 
-                    location: currentWeatherData.name,
-                    weatherIcon: iconMapping[currentWeatherData.weather[0].icon], // Set the weather icon here
-                    feels: currentWeatherData.main.feels_like,
-                    humidity: currentWeatherData.main.humidity,
-                    windspeed: currentWeatherData.wind.speed
-                });
+                if (currentWeatherData.cod === 200) {
+                    const weatherData = {
+                        location: currentWeatherData.name,
+                        weatherIcon: iconMapping[currentWeatherData.weather[0].icon],
+                        feels: currentWeatherData.main.feels_like,
+                        humidity: currentWeatherData.main.humidity,
+                        windspeed: currentWeatherData.wind.speed
+                    };
+                    setWeatherData(weatherData);
+                    setFiveDayForecast(processedForecastData);
+                    setCachedData(searchCity, weatherData, processedForecastData);
+                }
             }
-
-            if (forecastData.cod === "200") {
-                setFiveDayForecast(processedForecastData);
-            }
-
             setErrorMessage("");
         } catch (error) {
             console.error("Error fetching weather data: ", error);
@@ -64,9 +82,7 @@ const Weatherapp = () => {
         setLoading(false);
     };
 
-    // A helper function to process the 5-day forecast data
     const processForecastData = (forecastList) => {
-        // Process the forecast data to get daily summaries
         const dailyData = {};
         forecastList.forEach((forecast) => {
             const day = new Date(forecast.dt_txt).toLocaleDateString();
@@ -76,7 +92,6 @@ const Weatherapp = () => {
             dailyData[day].push(forecast);
         });
 
-        // Reduce the data to get the high, low, and other information for each day
         return Object.keys(dailyData).map((day) => {
             const dayForecasts = dailyData[day];
             const highs = dayForecasts.map(f => f.main.temp_max);
@@ -125,6 +140,26 @@ const Weatherapp = () => {
     };
 
     const backgroundStyle = weatherData ? { backgroundImage: `url(${getBackgroundImage(weatherData.weatherCondition)})` } : {};
+
+    const getCachedData = (city) => {
+        const cachedData = JSON.parse(localStorage.getItem(city));
+        if (!cachedData) return null;
+        const now = new Date().getTime();
+        if (now - cachedData.timestamp > CACHE_EXPIRATION) {
+            localStorage.removeItem(city);
+            return null;
+        }
+        return cachedData;
+    };
+
+    const setCachedData = (city, currentWeather, fiveDayForecast) => {
+        const data = {
+            currentWeather,
+            fiveDayForecast,
+            timestamp: new Date().getTime()
+        };
+        localStorage.setItem(city, JSON.stringify(data));
+    };
 
     return (
         <>

@@ -19,28 +19,7 @@ const Weatherapp = () => {
     useEffect(() => {
         fetchWeatherForRandomCity();
     
-        const timer = setTimeout(() => {
-            // Start the fade-out
-            const preloader = document.getElementById("preloader");
-            if (preloader) {
-                preloader.classList.add('fade-out');
-            }
-    
-            // Wait for the fade-out to finish before hiding the preloader
-            const fadeOutDuration = 1000; // duration of fade-out in milliseconds
-            setTimeout(() => {
-                if (preloader) {
-                    preloader.style.display = 'none';
-                }
-                const mainContent = document.querySelector('main');
-                if (mainContent) {
-                    mainContent.classList.add('fade-in');
-                    mainContent.style.display = 'block';
-                }
-            }, fadeOutDuration);
-        }, 3000);
-    
-        return () => clearTimeout(timer);
+        
     }, []);
     
 
@@ -151,12 +130,7 @@ const Weatherapp = () => {
     
     return (
         <>
-            <div id="preloader"> 
-                    <><div className="text-container">
-                        <h1> New Jersey Local Weather</h1>
-                        <p> News Anchor Amber Sautner </p>
-                    </div><img src="images/sun.gif" alt="loading" className="character-graphic" /></>
-              </div> 
+       
         <div className="container" style={!loading ? backgroundStyle : {}}>
             <div className="top-bar">
                 <input

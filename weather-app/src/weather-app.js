@@ -81,10 +81,17 @@ const Weatherapp = () => {
             const dayForecasts = dailyData[day];
             const highs = dayForecasts.map(f => f.main.temp_max);
             const lows = dayForecasts.map(f => f.main.temp_min);
+            const feels = dayForecasts.map(f => f.main.feels_like);
+            const humidity = dayForecasts.map(f => f.main.humidity);
+            const wind = dayForecasts.map(f => f.wind.speed);
+
             const daySummary = {
                 day,
                 high: Math.max(...highs).toFixed(1),
                 low: Math.min(...lows).toFixed(1),
+                feels: Math.max(...feels).toFixed(1),
+                humidity: Math.max(...humidity),
+                wind: Math.max(...wind).toFixed(1),
                 iconCode: dayForecasts[0].weather[0].icon,
                 description: dayForecasts[0].weather[0].main
             };
@@ -144,11 +151,7 @@ const Weatherapp = () => {
                             <div className="weather-location">{weatherData.location}</div>
                             <img src={weatherData.weatherIcon} alt="Weather icon" />
                         </div>
-                        <div className="weather-flexbox">
-                            <div className="weather-feels">Feels Like: {weatherData.feels}</div>
-                            <div className="humidity-percent">Humidity: {weatherData.humidity}</div>
-                            <div className="wind-rate">Wind Speed: {weatherData.windspeed}</div>
-                        </div>
+
                         {fiveDayForecast.length > 0 && (
                             <div className="forecast-container">
                                 {fiveDayForecast.map((forecastData, index) => (
@@ -157,6 +160,9 @@ const Weatherapp = () => {
                                         day={forecastData.day}
                                         high={forecastData.high}
                                         low={forecastData.low}
+                                        humidity={forecastData.humidity}
+                                        feels={forecastData.feels}
+                                        wind={forecastData.wind}
                                         icon={iconMapping[forecastData.iconCode]}
                                         description={forecastData.description}
                                     />

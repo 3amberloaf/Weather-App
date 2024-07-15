@@ -33,17 +33,7 @@ const Weatherapp = () => {
         "50n": '/images/50n.png'
     };
 
-    const fetchWeatherForRandomCity = useCallback(async () => {
-        const cities = ["Warren", "Bedminster", "Newark", "Trenton", "Hillsborough"];
-        const randomCity = cities[Math.floor(Math.random() * cities.length)];
-        fetchWeatherData(randomCity);
-    }, []);
-
-    useEffect(() => {
-        fetchWeatherForRandomCity();
-    }, [fetchWeatherForRandomCity]);
-
-    const fetchWeatherData = async (searchCity) => {
+    const fetchWeatherData = useCallback(async (searchCity) => {
         setLoading(true);
         try {
             const cachedData = getCachedData(searchCity);
@@ -80,7 +70,17 @@ const Weatherapp = () => {
             setErrorMessage("Failed to fetch weather data. Please try again later.");
         }
         setLoading(false);
-    };
+    }, [iconMapping]);
+
+    const fetchWeatherForRandomCity = useCallback(async () => {
+        const cities = ["Warren", "Bedminster", "Newark", "Trenton", "Hillsborough"];
+        const randomCity = cities[Math.floor(Math.random() * cities.length)];
+        fetchWeatherData(randomCity);
+    }, [fetchWeatherData]);
+
+    useEffect(() => {
+        fetchWeatherForRandomCity();
+    }, [fetchWeatherForRandomCity]);
 
     const processForecastData = (forecastList) => {
         const dailyData = {};
